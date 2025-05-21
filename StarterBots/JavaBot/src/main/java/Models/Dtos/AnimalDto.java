@@ -1,40 +1,47 @@
 package Models.Dtos;
 
-import java.util.UUID;
-
 public class AnimalDto {
-    public UUID Id;
-    public int X;
-    public int Y;
-    public int spawnX;
-    public int spawnY;
-    public int Score;
-    public int capturedCounter;
-    public int distanceCovered;
-    public boolean IsViable;
+    private String id;
+    private String nickname;
+    private int x;
+    private int y;
+    private int spawnX;
+    private int spawnY;
+    private int score;
+    private int capturedCounter;
+    private int distanceCovered;
+    private boolean IsViable;
 
-    public UUID getId() {
-        return Id;
+    public String getId() {
+        return id;
     }
 
-    public void setId(UUID id) {
-        Id = id;
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+    public String getNickName() {
+    	return nickname;
+    }
+    
+    public void setNickName(String NickName) {
+    	this.nickname = NickName;
     }
 
     public int getX() {
-        return X;
+        return x;
     }
 
     public void setX(int x) {
-        X = x;
+        this.x = x;
     }
 
     public int getY() {
-        return Y;
+        return y;
     }
 
     public void setY(int y) {
-        Y = y;
+        this.y = y;
     }
 
     public int getSpawnX() {
@@ -54,11 +61,11 @@ public class AnimalDto {
     }
 
     public int getScore() {
-        return Score;
+        return score;
     }
 
     public void setScore(int score) {
-        Score = score;
+        this.score = score;
     }
 
     public int getCapturedCounter() {
@@ -84,4 +91,11 @@ public class AnimalDto {
     public void setViable(boolean viable) {
         IsViable = viable;
     }
+    
+    public String toString() {
+    	return "\nAnimal_ID : "+id+"\nNickname: "+nickname+"\nCurrent position: "+x+","+y+" Spawn Point: "+spawnX+","+spawnY+
+    			" isViable: "+IsViable+" Distance_covered: "+distanceCovered+" Captured: "+capturedCounter;
+    }
+    
+    
 }

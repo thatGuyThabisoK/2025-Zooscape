@@ -1,33 +1,37 @@
 package Models.Dtos;
 
-import Enums.CellContent;
-
 public class CellDto {
-    public int X;
-    public int Y;
-    public CellContent cellContent;
+    private int x;
+    private int y;
+    private int content;
 
     public int getX() {
-        return X;
+        return x;
     }
 
-    public void setX(int x) {
-        X = x;
+    public void setX(int X) {
+        this.x = X;
     }
 
     public int getY() {
-        return Y;
+        return y;
     }
 
-    public void setY(int y) {
-        Y = y;
+    public void setY(int Y) {
+        this.y = Y;
     }
 
-    public CellContent getCellContent() {
-        return cellContent;
+    public int getCellContent() {
+        return content;
     }
 
-    public void setCellContent(CellContent cellContent) {
-        this.cellContent = cellContent;
+    public void setCellContent(int Content) {
+        this.content = Content;
     }
+    
+    public String toString() {
+    	return "Coordinates: "+x+","+y+" Content: "+content;
+    }
+    
+    
 }

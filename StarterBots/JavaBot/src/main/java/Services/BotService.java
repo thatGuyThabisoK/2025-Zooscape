@@ -31,6 +31,10 @@ public class BotService {
 
     public BotCommandDto processState(GameStateDto gameState) {
         //Add your bot logic here
+    	
+    	//System.out.println(gameState.getAnimals().get(0).getId());
+    	
+    	
         return new BotCommandDto(BotAction.UP);
     }
 }

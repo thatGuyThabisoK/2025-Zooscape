@@ -1,51 +1,66 @@
 package Models.Dtos;
 
-import java.util.UUID;
-
 public class ZookeeperDto {
-    public UUID Id;
-    public int X;
-    public int Y;
-    public int spawnX;
-    public int spawnY;
+    private String id;
+    private String nickname;
+    private int x;
+    private int y;
+    private int spawnX;
+    private int spawnY;
 
-    public UUID getId() {
-        return Id;
+    public String getId() {
+        return id;
     }
 
-    public void setId(UUID id) {
-        Id = id;
+    public void setId(String id) {
+        this.id = id;
     }
+    
+    public String Nickname() {
+    	return nickname;
+    }
+    
+    public void setNickname(String Nickname) {
+    	this.nickname = Nickname;
+    }
+    
 
     public int getX() {
-        return X;
+        return x;
     }
 
-    public void setX(int x) {
-        X = x;
+    public void setX(int X) {
+        this.x = X;
     }
 
     public int getY() {
-        return Y;
+        return y;
     }
 
-    public void setY(int y) {
-        Y = y;
+    public void setY(int Y) {
+        this.y = Y;
     }
 
     public int getSpawnX() {
         return spawnX;
     }
 
-    public void setSpawnX(int spawnX) {
-        this.spawnX = spawnX;
+    public void setSpawnX(int SpawnX) {
+        this.spawnX = SpawnX;
     }
 
     public int getSpawnY() {
         return spawnY;
     }
 
-    public void setSpawnY(int spawnY) {
-        this.spawnY = spawnY;
+    public void setSpawnY(int SpawnY) {
+        this.spawnY = SpawnY;
     }
+    
+    
+    public String toString() {
+    	return "UUID : "+id+" NickName: "+nickname+" Current position: "+x+","+y+" Spawn Point: "+spawnX+","+spawnY;
+    }
+    
+    
 }

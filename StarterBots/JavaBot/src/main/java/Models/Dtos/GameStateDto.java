@@ -2,19 +2,20 @@ package Models.Dtos;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 public class GameStateDto {
-    public LocalDateTime timeStamp;
-    public int tick;
-    public List<CellDto> cells;
-    public List<AnimalDto> animals;
-    public List<ZookeeperDto> zookeepers;
+    private String timeStamp;
+    private int tick;
+    private List<CellDto> cells = new ArrayList<>();
+    private List<AnimalDto> animals  = new ArrayList<>();
+    private List<ZookeeperDto> zookeepers = new ArrayList<>();
 
-    public LocalDateTime getTimeStamp() {
+    public String getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(LocalDateTime timeStamp) {
+    public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 
@@ -46,7 +47,17 @@ public class GameStateDto {
         return zookeepers;
     }
 
-    public void setZookeepers(List<ZookeeperDto> zookeepers) {
-        this.zookeepers = zookeepers;
+    public void setZookeepers(List<ZookeeperDto> Zookeepers) {
+        this.zookeepers = Zookeepers;
     }
+    
+    public String toString() {
+    	return "TimeStamp :"+timeStamp+" Tick: "+tick+animals.get(0).toString();
+    }
+    
+    public String printSizes() {
+    	return "Tick: "+tick+" Animal Size: "+animals.size()+" Zookepers :"+zookeepers.size()+" Cells: "+cells.size();
+    }
+    
+    
 }
