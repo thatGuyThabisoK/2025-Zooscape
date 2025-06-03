@@ -1,14 +1,16 @@
 package Services;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import java.util.Queue;
+
+
+import Models.Dtos.CellDto;
 import utilities.Point;
+import utilities.UtilFunctions;
 
 public class GraphTraversal{
     
@@ -22,37 +24,29 @@ public class GraphTraversal{
      * @return A String array representing the path from the start to the nearest pellet (inclusive),
      * or an empty array if no pellet is reachable, the start point is invalid, or the start point is a wall.
      */
-    public static LinkedList<Point> findPathToNearestPellet(int[][] graph, Point startPoint) {
-    	LinkedList<Point> path = new LinkedList<>();
-
+    public ArrayList<Point> findPathToNearestPellet(List<CellDto> graph, Point startPoint) {
+    	ArrayList<Point> path = new ArrayList<>();
+    	int dimention = (int) Math.sqrt(graph.size());
         // Check if the start point exists in the graph and is not a wall.
         // If the start point is not in the graph, it's an invalid starting position.
-        if (!isValidCoordinate(graph.length,startPoint) || graph[startPoint.x][startPoint.y] == 1) {
+        if (!isValidCoordinate(dimention,startPoint) || graph.get(UtilFunctions.getElementIndex(dimention,startPoint.x,startPoint.y)).getContent() == 1) {
             System.out.println("Start point '" + startPoint.toString() + "' is invalid (not in graph or is a wall).");
-            return path;
-        }
-
-        // If the start point itself is a pellet, the path is just the start point.
-        if (graph[startPoint.x][startPoint.y] == 2) {
-        	path.add(startPoint);
             return path;
         }
 
         // Queue for BFS traversal. Stores points to visit.
         Queue<Point> queue = new LinkedList<>();
-        // Set to keep track of visited points to prevent cycles and redundant processing.
-        Set<Point> visited = new HashSet<>();
-        // Map to reconstruct the path: stores Child -> Parent relationship.
-        Map<Point, Point> parentMap = new HashMap<>();
-
+      
         // Initialize BFS: Add the start point to the queue and mark it as visited.
         queue.add(startPoint);
-        visited.add(startPoint);
+        startPoint.setIsVisited(true);
 
         // Define possible movements: (dx, dy) for right, left, down, up.
-        int[] dx = {1, -1, 0, 0}; // Change in x-coordinate
-        int[] dy = {0, 0, 1, -1}; // Change in y-coordinate
-
+        int[] dx = {-1, 1, 0, 0};
+		int[] dy = {0, 0, -1, 1};
+		
+		int[] move = {3,4,1,2};
+		
         Point foundPellet = null; // Stores the first pellet found (which will be the nearest)
 
         // Perform BFS until the queue is empty or a pellet is found.
@@ -62,19 +56,19 @@ public class GraphTraversal{
             // Explore all four possible neighbors (up, down, left, right).
             for (int i = 0; i < 4; i++) {
                 Point neighbor = new Point(current.x + dx[i], current.y + dy[i]);
-                
+                neighbor.setDirection(move[i]);
                 // Check if the neighbor is within the graph bounds and has not been visited yet.
-                if (isValidCoordinate(graph.length, neighbor) && !visited.contains(neighbor)) {
-                    int neighborValue = graph[neighbor.x][neighbor.y];
+                if (isValidCoordinate(dimention, neighbor) && !neighbor.isVisited()) {
+                    int neighborValue = graph.get(UtilFunctions.getElementIndex(dimention,neighbor.x,neighbor.y)).getContent();
 
                     // If the neighbor is a wall (value 1), it cannot be traversed, so skip it.
-                    if (neighborValue == 1) {
+                    if (neighborValue == 1 || neighborValue == 4 || neighborValue == 3) {
                         continue;
                     }
 
                     // Mark the neighbor as visited and record its parent (the current point).
-                    visited.add(neighbor);
-                    parentMap.put(neighbor, current);
+                    neighbor.setIsVisited(true);
+                    neighbor.setParent(current);
 
                     // If the neighbor is a pellet (value 2), we have found the nearest one.
                     // BFS guarantees that the first time a target is found, it's via the shortest path.
@@ -104,18 +98,17 @@ public class GraphTraversal{
         
         Point currentPathPoint = foundPellet;
         while (!currentPathPoint.equals(startPoint)) {
-            path.addFirst(currentPathPoint); // Add the current point to the beginning of the path
-            currentPathPoint = parentMap.get(currentPathPoint); // Move to its parent
-            // The loop naturally stops when currentPathPoint becomes null (after adding the startPoint)
+            path.add(currentPathPoint); // Add the current point to the beginning of the path
+            currentPathPoint = currentPathPoint.getParent(); // Move to its parent
         }
         
         return path;
     }
     
     
-    private static boolean isValidCoordinate(int dimention, Point start) {
+    private boolean isValidCoordinate(int dimention, Point start) {
     	
-    	return (start.x < dimention && start.x >= 0) && (start.x < dimention && start.x >= 0);	
+    	return (start.x < dimention && start.x >= 0) && (start.y < dimention && start.y >= 0);	
     	
     }
 

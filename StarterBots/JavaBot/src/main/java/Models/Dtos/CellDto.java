@@ -1,5 +1,7 @@
 package Models.Dtos;
 
+import utilities.Point;
+
 public class CellDto {
     private int x;
     private int y;
@@ -21,16 +23,20 @@ public class CellDto {
         this.y = Y;
     }
 
-    public int getCellContent() {
+    public int getContent() {
         return content;
     }
 
-    public void setCellContent(int Content) {
+    public void setContent(int Content) {
         this.content = Content;
     }
     
+    public Point getCellPoint() {
+    	return new Point(x,y);
+    }
+    
     public String toString() {
-    	return "Coordinates: "+x+","+y+" Content: "+content;
+    	return " Coordinates: "+x+","+y+" Content: "+content;
     }
     
     

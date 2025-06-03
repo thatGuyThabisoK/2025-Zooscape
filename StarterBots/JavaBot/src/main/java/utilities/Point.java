@@ -6,6 +6,9 @@ public class Point {
 	
         public int x;
         public int y;
+        private Point parent;
+        private boolean isVisited;
+        private int direction;
 
         /**
          * Constructs a new Point object.
@@ -16,6 +19,28 @@ public class Point {
             this.x = x;
             this.y = y;
         }
+        
+        public void setParent(Point parent) {
+        	this.parent = parent;
+        }
+        
+        public Point getParent() {
+        	return parent;
+        }
+        
+        public void setIsVisited(boolean visited) {
+        	isVisited = visited;
+        }
+        
+        public boolean isVisited() {
+        	return isVisited;
+        }
+        
+        public void setDirection(int direction) {
+        	this.direction = direction;
+        }
+        
+        public int getDirection() {return direction;}
 
         /**
          * Converts the Point object back to its "x,y" string representation.
@@ -23,7 +48,7 @@ public class Point {
          */
         @Override
         public String toString() {
-            return x + "," + y;
+            return x + "," + y+" direction: "+direction;
         }
 
         /**

@@ -1,9 +1,12 @@
 package org.example;
 
+import Models.Dtos.AnimalDto;
 import Models.Dtos.BotCommandDto;
 import Models.Dtos.CellDto;
 import Models.Dtos.GameStateDto;
 import Services.BotService;
+import utilities.Point;
+import utilities.UtilFunctions;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -26,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class Main {
-	static boolean allow = true;
+	
 	
     public static void main(String[] args) {	
     	
@@ -77,7 +80,7 @@ public class Main {
         	botService.setGameStateDto(gameStateDto);
         	
         	
-        	System.out.println(gameStateDto.toString());
+        	//System.out.println(gameStateDto.toString());
         }, GameStateDto.class);
         
 
@@ -87,23 +90,95 @@ public class Main {
         hubConnection.send("Register", token, nickname);
 
         //Gson gsonObj = new Gson();
+        Point prevPoint= new Point(0,0);
+        int sentCommand = 0;
         
         while (hubConnection.getConnectionState() == HubConnectionState.CONNECTED) {
             GameStateDto gameState = botService.getGameStateDto();
             
             if (gameState == null) {
-            	System.out.println("NULL..");
+            	System.out.println("null......");
                 continue;
             }
             
            
             commandDto = botService.processState(gameState);
-           // System.out.println(gsonObj.toJson(commandDto));
-            hubConnection.send("BotCommand", commandDto);
             
-           
+            if(commandDto == null) {
+            	
+            	continue;
+            }
+            //check if it at spawn
+            AnimalDto myAgent = gameState.getAnimals().get(0);
+            
+            /*if(gameState.getTick() == 20) {
+            	printState(gameState.getCells(),myAgent.getCurrentPoint());
+            	hubConnection.stop();
+            	break;
+            }*/
+            
+            if(UtilFunctions.isAtSpawn(myAgent) && !myAgent.isViable() ) {
+            	
+            	hubConnection.send("BotCommand", commandDto);
+            	prevPoint = myAgent.getCurrentPoint();
+            	sentCommand=+1000;
+            	try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	continue;
+            }
+            
+            if(myAgent.isViable() ) {
+            	
+            	
+            	hubConnection.send("BotCommand", commandDto);
+            	prevPoint = myAgent.getCurrentPoint();
+            	sentCommand+=1000;
+            	
+            	try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	continue;
+            	
+            }
+            
+            
+            sentCommand--;
+            
         }
-
+        
         hubConnection.stop();
     }
+    
+    
+    public static void printState(List<CellDto> cells, Point start) {
+    	int colIndex = 0;
+    	for(CellDto c : cells) {
+    		
+    		
+    		
+    		System.out.print((c.getCellPoint().equals(start))?"6 ":c.getContent()+" ");
+    	
+    		if(colIndex == limit(51,c.getX())) {
+    			System.out.println();
+    		}
+    		
+    		++colIndex;
+    			
+    	}	
+    }
+    
+    public static int limit(int n, int index) {
+    	return (n-1)+(n*index);
+    }
+    
+    
+    
+    
 }

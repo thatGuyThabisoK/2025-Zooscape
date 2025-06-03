@@ -1,5 +1,7 @@
 package Models.Dtos;
 
+import utilities.Point;
+
 public class AnimalDto {
     private String id;
     private String nickname;
@@ -10,7 +12,7 @@ public class AnimalDto {
     private int score;
     private int capturedCounter;
     private int distanceCovered;
-    private boolean IsViable;
+    private boolean isViable;
 
     public String getId() {
         return id;
@@ -85,16 +87,24 @@ public class AnimalDto {
     }
 
     public boolean isViable() {
-        return IsViable;
+        return isViable;
     }
 
     public void setViable(boolean viable) {
-        IsViable = viable;
+        isViable = viable;
+    }
+    
+    public Point getCurrentPoint() {
+    	return new Point(x,y);
+    }
+    
+    public Point getSpawnPoint() {
+    	return new Point(spawnX,spawnY);
     }
     
     public String toString() {
     	return "\nAnimal_ID : "+id+"\nNickname: "+nickname+"\nCurrent position: "+x+","+y+" Spawn Point: "+spawnX+","+spawnY+
-    			" isViable: "+IsViable+" Distance_covered: "+distanceCovered+" Captured: "+capturedCounter;
+    			" isViable: "+isViable+" Distance_covered: "+distanceCovered+" Captured: "+capturedCounter;
     }
     
     

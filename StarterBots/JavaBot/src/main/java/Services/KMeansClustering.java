@@ -3,6 +3,10 @@ package Services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import Models.Dtos.CellDto;
+import utilities.UtilFunctions;
+
 import java.util.Arrays;
 
 
@@ -17,13 +21,15 @@ public class KMeansClustering{
      * @return              A list of lists, where each inner list contains the 2D coordinates of the centroid for each cluster.
      * Returns an empty list if the input data is invalid or empty, or if k is invalid.
      */
-    public static List<int[]> kmeans(int[][] data, int k, int iterations) {
+    public List<int[]> kmeans(List<CellDto> data, int k, int iterations) {
         // Input validation
-        if (data == null || data.length == 0 || data[0].length == 0 || k <= 0 || iterations <= 0) {
+        if (data == null || data.isEmpty() || k <= 0 || iterations <= 0) {
             return new ArrayList<>(); // Return an empty list for invalid input
         }
 
-        int cols = data[0].length;
+        
+        int n = getDimention(data);
+        
 
         // 1. Initialize centroids randomly
         List<int[]> centroids = initializeRandomCentroids(data, k);
@@ -34,7 +40,7 @@ public class KMeansClustering{
             List<List<int[]>> clusters = assignDataToClusters(data, centroids);
 
             // 4. Update centroids based on the mean of the points in each cluster
-            List<int[]> newCentroids = updateCentroids(clusters, cols);
+            List<int[]> newCentroids = updateCentroids(clusters, n);
              if (centroidsChanged(centroids, newCentroids)) {
                 centroids = newCentroids;
             } else {
@@ -54,24 +60,24 @@ public class KMeansClustering{
      * @param k    The number of clusters.
      * @return A list of integer arrays, where each array represents the coordinates of a centroid.
      */
-    private static List<int[]> initializeRandomCentroids(int[][] data, int k) {
+    private List<int[]> initializeRandomCentroids(List<CellDto> data, int k) {
         List<int[]> centroids = new ArrayList<>();
         Random random = new Random();
-        int rows = data.length;
-        int cols = data[0].length;
-        boolean[] chosen = new boolean[rows]; // Keep track of which rows have been chosen as centroids
+        int n = getDimention(data);
+        
+        boolean[] chosen = new boolean[n]; // Keep track of which rows have been chosen as centroids
 
         for (int i = 0; i < k; i++) {
             int rowIndex;
             do {
-                rowIndex = random.nextInt(rows); // Generate random row index
+                rowIndex = random.nextInt(n); // Generate random row index
             } while (chosen[rowIndex]);       // Ensure we don't pick the same row twice
 
             chosen[rowIndex] = true;            // Mark the row as chosen
             //Find the first '1' in the row.
             int colIndex = -1;
-            for(int j = 0; j < cols; j++){
-                if(data[rowIndex][j] == 2){
+            for(int j = 0; j < n; j++){
+                if(data.get(UtilFunctions.getElementIndex(n, rowIndex, j)).getContent()== 2){
                     colIndex = j;
                     break;
                 }
@@ -96,30 +102,28 @@ public class KMeansClustering{
     * @return A list of lists, where each inner list contains the coordinates of the
     * data points belonging to that cluster.
     */
-    private static List<List<int[]>> assignDataToClusters(int[][] data, List<int[]> centroids) {
+    private List<List<int[]>> assignDataToClusters(List<CellDto> data, List<int[]> centroids) {
         List<List<int[]>> clusters = new ArrayList<>();
         for (int i = 0; i < centroids.size(); i++) {
             clusters.add(new ArrayList<>()); // Initialize empty lists for each cluster
         }
 
-        int rows = data.length;
-        int cols = data[0].length;
 
-        for (int i = 0; i < rows; i++) {
-            for(int j = 0; j < cols; j++){
-                if(data[i][j] == 2){ // Only consider '1' values as data points.
-                    double minDistance = Double.MAX_VALUE;
-                    int closestCluster = -1;
+        for (int i = 0; i < data.size(); i++) {
+        	CellDto curr = data.get(i);
+            
+        	if(curr.getContent() == 2){ // Only consider '1' values as data points.
+                double minDistance = Double.MAX_VALUE;
+                int closestCluster = -1;
 
-                    for (int k = 0; k < centroids.size(); k++) {
-                        double distance = calculateEuclideanDistance(i, j, centroids.get(k)[0], centroids.get(k)[1]);
-                        if (distance < minDistance) {
-                            minDistance = distance;
-                            closestCluster = k;
-                        }
+                for (int k = 0; k < centroids.size(); k++) {
+                    double distance = calculateEuclideanDistance(curr.getX(), curr.getY(), centroids.get(k)[0], centroids.get(k)[1]);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestCluster = k;
                     }
-                    clusters.get(closestCluster).add(new int[]{i, j}); // Add the point to the closest cluster
                 }
+                clusters.get(closestCluster).add(new int[] {curr.getX(), curr.getY()}); // Add the point to the closest cluster
             }
 
         }
@@ -135,7 +139,7 @@ public class KMeansClustering{
      * @param y2 The y-coordinate of the second point.
      * @return The Euclidean distance between the two points.
      */
-    private static double calculateEuclideanDistance(int x1, int y1, int x2, int y2) {
+    private  double calculateEuclideanDistance(int x1, int y1, int x2, int y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
@@ -146,7 +150,7 @@ public class KMeansClustering{
      * @param cols The number of columns in the data.
      * @return A list of new centroids.
      */
-    private static List<int[]> updateCentroids(List<List<int[]>> clusters, int cols) {
+    private List<int[]> updateCentroids(List<List<int[]>> clusters, int cols) {
         List<int[]> newCentroids = new ArrayList<>();
         for (List<int[]> cluster : clusters) {
             if (cluster.isEmpty()) {
@@ -168,7 +172,7 @@ public class KMeansClustering{
         return newCentroids;
     }
 
-    private static boolean centroidsChanged(List<int[]> oldCentroids, List<int[]> newCentroids) {
+    private boolean centroidsChanged(List<int[]> oldCentroids, List<int[]> newCentroids) {
         if (oldCentroids.size() != newCentroids.size()) {
             return true; // Sizes differ, centroids have changed
         }
@@ -180,7 +184,7 @@ public class KMeansClustering{
         return false; // All centroids are the same
     }
     
-    public static void showCentroids(List<int[]> clusters, int i) {
+    public void showCentroids(List<int[]> clusters, int i) {
     	if (clusters.isEmpty()) {
             System.out.println("Invalid input or no clusters found for cluster "+i);
         } else {
@@ -190,6 +194,10 @@ public class KMeansClustering{
                 System.out.println(Arrays.toString(centroid));
             }
         }
+    }
+    
+    private int getDimention(List<CellDto> data) {
+    	return (int)Math.sqrt(data.size());
     }
 }
 
