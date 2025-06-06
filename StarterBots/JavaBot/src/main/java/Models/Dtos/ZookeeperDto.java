@@ -1,5 +1,7 @@
 package Models.Dtos;
 
+import utilities.Point;
+
 public class ZookeeperDto {
     private String id;
     private String nickname;
@@ -55,6 +57,10 @@ public class ZookeeperDto {
 
     public void setSpawnY(int SpawnY) {
         this.spawnY = SpawnY;
+    }
+    
+    public Point getKeeperPoint() {
+    	return new Point(x,y);
     }
     
     

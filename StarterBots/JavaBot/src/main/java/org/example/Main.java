@@ -48,7 +48,7 @@ public class Main {
 
         String url = ip + ":" + "5000" + "/bothub";
 
-        String nickname = environmentNickname != null ? environmentNickname : "ResetJavaBot";
+        String nickname = environmentNickname != null ? environmentNickname : "JavaBot";
         
         
 
@@ -105,7 +105,7 @@ public class Main {
             commandDto = botService.processState(gameState);
             
             if(commandDto == null) {
-            	
+            	System.out.println("could not find a pellet!! at Tick "+gameState.getTick());
             	continue;
             }
             //check if it at spawn
@@ -148,8 +148,7 @@ public class Main {
             	
             }
             
-            
-            sentCommand--;
+            System.out.println("Tick :"+gameState.getTick()+" not viable/not at spawn!!");
             
         }
         

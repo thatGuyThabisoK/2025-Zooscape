@@ -44,7 +44,7 @@ public class BotService {
     	}
     	//Point move = UtilFunctions.basicMove(gameState.getCells(), curr);
     	if(pathToPellet.isEmpty() || index == -1 || !UtilFunctions.isStillValid(gameState.getCells(), pathToPellet.get(index))) {
-    		pathToPellet = path.findPathToNearestPellet(gameState.getCells(), curr);
+    		pathToPellet = path.findPathToNearestPellet(gameState.getCells(), curr, gameState.getZookeepers().get(0).getKeeperPoint());
     		index = pathToPellet.size()-1;
     	}
     	

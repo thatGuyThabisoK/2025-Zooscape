@@ -24,7 +24,7 @@ public class GraphTraversal{
      * @return A String array representing the path from the start to the nearest pellet (inclusive),
      * or an empty array if no pellet is reachable, the start point is invalid, or the start point is a wall.
      */
-    public ArrayList<Point> findPathToNearestPellet(List<CellDto> graph, Point startPoint) {
+    public ArrayList<Point> findPathToNearestPellet(List<CellDto> graph, Point startPoint, Point zooKeeper) {
     	ArrayList<Point> path = new ArrayList<>();
     	int dimention = (int) Math.sqrt(graph.size());
         // Check if the start point exists in the graph and is not a wall.
@@ -62,7 +62,7 @@ public class GraphTraversal{
                     int neighborValue = graph.get(UtilFunctions.getElementIndex(dimention,neighbor.x,neighbor.y)).getContent();
 
                     // If the neighbor is a wall (value 1), it cannot be traversed, so skip it.
-                    if (neighborValue == 1 || neighborValue == 4 || neighborValue == 3) {
+                    if (neighborValue == 1 || neighborValue == 4 || neighborValue == 3 || startPoint.equals(zooKeeper)) {
                         continue;
                     }
 
